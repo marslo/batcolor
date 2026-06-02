@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/marslo/batchip/compare/v1.1.0...v1.1.1) (2026-06-02)
+
+### fix
+
+* fix(hexcode): fix the end boundary of hexcode
+
+Fixed #4
+
 ## [1.1.0](https://github.com/marslo/batchip/compare/v1.0.2...v1.1.0) (2026-06-02)
 
 ### feat
