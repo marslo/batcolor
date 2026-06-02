@@ -69,6 +69,7 @@ Hex codes, RGB/HSL values, and named CSS colors are highlighted in their actual 
   - *Hex**: 3, 4, 6, and 8-bit hex codes (e.g., `#fff`, `#AAbB11aa`, `"A0CC2F"`).
   - **RGB/RGBA**: `rgb(74, 242, 161)`, `rgba(74, 242, 161, 0.3)`.
   - **HSL/HSLA**: `hsl(120, 100%, 50%)`, `hsla(120, 100%, 50%, 0.5)`.
+  - **Oklch**: `oklch(50% 0.5 120)`, `oklch(0.6 0.27 30 / 0.3)`.
   - **Bare Tuples**: `255, 50, 127` or `218,112,214`.
   - **Named Colors**: `slateblue`, `olivedrab`, `aliceblue`, etc.
   - **Smart Contrast (Rec. 709 Luma)**: Automatically calculates the perceived brightness of the background color and switches the foreground text to absolute Black or White for maximum readability. It accurately handles high-luminance colors like pure green (`#00ff00`).
@@ -85,6 +86,9 @@ Make sure you have the following installed on your system:
 - [x] `curl` (for initial color-names JSON download)
 
 ## Setup
+
+> [!TIP]
+> make sure the directory ( i.e., `~/.local/bin`) is in your PATH
 
 ```bash
 curl -fsSl -O ~/.local/bin/batchip https://github.com/marslo/batchip/raw/main/batchip
