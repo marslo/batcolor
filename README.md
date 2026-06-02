@@ -40,7 +40,7 @@ Hex codes, RGB/HSL values, and named CSS colors are highlighted in their actual 
 
 | COLOR FORMAT | EXAMPLE                                            |
 |--------------|----------------------------------------------------|
-| Hex          | `#fff`, `#AABB11AA`, `"A0CC2F"`                    |
+| Hex          | `#fff`, `#AABB11AA`, `#f00f`, `"A0CC2F"`           |
 | RGB/RGBA     | `rgb(74, 242, 161)`, `rgba(74, 242, 161, 0.3)`     |
 | HSL/HSLA     | `hsl(120, 100%, 50%)`, `hsla(120, 100%, 50%, 0.5)` |
 | Oklch        | `oklch(50% 0.5 120)`, `oklch(0.6 0.27 30 / 0.3)`   |
