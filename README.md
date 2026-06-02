@@ -1,6 +1,6 @@
 # batchip
 
-A powerful wrapper for bat that instantly renders CSS color codes (Hex, RGB, HSL, Named Colors) in your terminal using TrueColor, featuring smart contrast (Rec. 709 Luma) and alpha blending
+A powerful wrapper for bat that instantly renders CSS color codes (Hex, RGB, HSL, Oklch, Named Colors) in your terminal using TrueColor, featuring smart contrast (Rec. 709 Luma) and alpha blending
 
 ---
 
@@ -17,6 +17,7 @@ Hex codes, RGB/HSL values, and named CSS colors are highlighted in their actual 
 
 # Table of Contents
 
+- [Supported color formats](#supported-color-formats)
 - [Demo](#demo)
 - [Features](#features)
 - [Installation](#installation)
@@ -32,6 +33,19 @@ Hex codes, RGB/HSL values, and named CSS colors are highlighted in their actual 
   - [How it Works (The Math)](#how-it-works-the-math)
   - [related discussion](#related-discussion)
 - [License](#license)
+
+---
+
+# Supported color formats
+
+| COLOR FORMAT | EXAMPLE                                            |
+|--------------|----------------------------------------------------|
+| Hex          | `#fff`, `#AABB11AA`, `"A0CC2F"`                    |
+| RGB/RGBA     | `rgb(74, 242, 161)`, `rgba(74, 242, 161, 0.3)`     |
+| HSL/HSLA     | `hsl(120, 100%, 50%)`, `hsla(120, 100%, 50%, 0.5)` |
+| Oklch        | `oklch(50% 0.5 120)`, `oklch(0.6 0.27 30 / 0.3)`   |
+| Bare Tuples  | `255, 50, 127` or `218,112,214`                    |
+| Named Colors | `slateblue`, `olivedrab`, `aliceblue`, etc         |
 
 ---
 

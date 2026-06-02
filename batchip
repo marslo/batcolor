@@ -3,11 +3,12 @@
 #      FileName : batchip
 #        Author : marslo
 #       Created : 2026-05-15 19:34:29
-#    LastChange : 2026-05-18 19:15:47
+#    LastChange : 2026-06-01 16:47:20
 #   Description : A wrapper around `bat` that colorizes hex color codes in the output. support:
 #                 - Hex: #fff, #ffffff, 'ffffff'
 #                 - RGB/RGBA: rgb(74, 242, 161), rgba(74, 242, 161, 0.3)
 #                 - HSL/HSLA: hsl(120, 100%, 50%), hsla(120, 100%, 50%, 0.5)
+#                 - OKLCH: oklch(60% 0.2671 30), oklch(0.6 0.27 30 / 0.5)
 #                 - Bare RGB tuples: 255, 50, 127 or 218,112,214
 #                 - Named colors: slateblue, olivedrab
 # =============================================================================
@@ -42,6 +43,31 @@ function _color_filter() {
   COLOR_JSON_PATH="${COLOR_NAMES_JSON}" perl -pe '
     BEGIN {
       use JSON::PP;
+
+      use POSIX qw(cos sin);
+
+      sub srgb_gamma {
+        my $x = shift;
+        return 0 if $x <= 0;
+        return 1 if $x >= 1;
+        return $x <= 0.0031308 ? 12.92 * $x : 1.055 * ($x ** (1/2.4)) - 0.055;
+      }
+
+      sub oklch2rgb {
+        my ($L, $C, $H) = @_;
+        my $h_rad = $H * 3.14159265358979 / 180;
+        my $a  = $C * cos($h_rad);
+        my $bv = $C * sin($h_rad);
+        my $l_ = $L + 0.3963377774 * $a + 0.2158037573 * $bv;
+        my $m_ = $L - 0.1055613458 * $a - 0.0638541728 * $bv;
+        my $s_ = $L - 0.0894841775 * $a - 1.2914855480 * $bv;
+        my ($l, $m, $s) = ($l_ ** 3, $m_ ** 3, $s_ ** 3);
+        return (
+          srgb_gamma( 4.0767416621 * $l - 3.3077115913 * $m + 0.2309699292 * $s) * 255,
+          srgb_gamma(-1.2684380046 * $l + 2.6097574011 * $m - 0.3413193965 * $s) * 255,
+          srgb_gamma(-0.0041960863 * $l - 0.7034186147 * $m + 1.7076147010 * $s) * 255,
+        );
+      }
 
       sub h2r {
         my ($p, $q, $t) = @_;
@@ -146,6 +172,34 @@ function _color_filter() {
         }
         $r = $r * $a + 255 * (1 - $a); $g = $g * $a + 255 * (1 - $a); $b = $b * $a + 255 * (1 - $a);
         # using `$match` to preserve any existing ANSI codes in the original string
+        colorize($match, $r, $g, $b);
+      } else {
+        $match;
+      }
+    }gie;
+
+    # ==========================================
+    # OKLCH: oklch(60% 0.2671 30), oklch(0.6 0.27 30 / 0.5)
+    # ==========================================
+    s{(oklch${P}\([^)]+\))}{
+      my $match = $1;
+      my $clean = $match; $clean =~ s/\033\[[^\x40-\x7E]*[\x40-\x7E]//g; $clean =~ s/\s+/ /g; $clean =~ s/^\s+|\s+$//g;
+      if ($clean =~ m{^oklch\(\s*([\d.]+)(%?)\s+([\d.]+)\s+([\d.]+)(?:deg)?(?:\s*/\s*([\d.]+)(%?))?\s*\)}i) {
+        my ($lv, $lp, $c, $h, $av, $ap) = ($1, $2, $3, $4, $5, $6);
+
+        my $L = $lp ? $lv / 100 : $lv;
+        $L = $L > 1 ? 1 : ($L < 0 ? 0 : $L);
+
+        my ($r, $g, $b) = oklch2rgb($L, $c, $h);
+
+        my $alpha = defined($av) ? $av + 0 : 1;
+        $alpha = $alpha / 100 if defined($ap) && length($ap) > 0;
+        $alpha = $alpha > 1 ? 1 : ($alpha < 0 ? 0 : $alpha);
+
+        $r = $r * $alpha + 255 * (1 - $alpha);
+        $g = $g * $alpha + 255 * (1 - $alpha);
+        $b = $b * $alpha + 255 * (1 - $alpha);
+
         colorize($match, $r, $g, $b);
       } else {
         $match;
