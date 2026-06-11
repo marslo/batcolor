@@ -297,7 +297,8 @@ function _color_filter() {
 function batchip() {
   local _dopage=true
   local _decolor=false
-  # strip BAT_OPTS and set BAT_STYLE=plain to avoid interference with our colorization logic
+  # wrapper mode respects everything: `~/.config/bat/config` AND all BAT_* env vars (BAT_OPTS/BAT_STYLE/BAT_THEME ...);
+  # pipe mode strips BAT_OPTS and forces BAT_STYLE=plain to avoid decorations interfering with colorization logic
   local -a _envcmd=( env -u BAT_OPTS BAT_STYLE=plain )
   local -a _batcmd=( command bat --color=always --paging=never )
 
@@ -335,7 +336,7 @@ function batchip() {
   # wrapper mode: `batchip style.css [OPTIONS ...]`
   _checkbat
   local _pager="${BAT_PAGER:-${PAGER:-less -R -F -X}}"
-  "${_envcmd[@]}" "${_batcmd[@]}" "$@" | _color_filter |
+  "${_batcmd[@]}" "$@" | _color_filter |
   if [[ "${_dopage}" == true && -t 1 ]]; then ${_pager}; else command cat; fi
 }
 
