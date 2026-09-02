@@ -1,3 +1,12 @@
+## [1.1.3](https://github.com/marslo/batchip/compare/v1.1.2...v1.1.3) (2026-09-02)
+
+### Bug Fixes
+
+* run bat by absolute path instead of 'command' builtin ([48b6ca8](https://github.com/marslo/batchip/commit/48b6ca82d26c2c0e13b89597ffe15d26b1d409f3))
+  - point _batcmd at "$(type -P bat)" instead of `command bat`
+  - exec the resolved bat binary for --help/--version/--list-*/cache passthrough
+  - add NOTE explaining the `command` builtin can't be exec'd by env/exec
+
 ## [1.1.2](https://github.com/marslo/batchip/compare/v1.1.1...v1.1.2) (2026-06-11)
 
 ### fix
