@@ -3,7 +3,7 @@
 #      FileName : batchip
 #        Author : marslo
 #       Created : 2026-05-15 19:34:29
-#    LastChange : 2026-06-01 16:47:20
+#    LastChange : 2026-09-02 03:14:44
 #   Description : A wrapper around `bat` that colorizes hex color codes in the output. support:
 #                 - Hex: #fff, #ffffff, 'ffffff'
 #                 - RGB/RGBA: rgb(74, 242, 161), rgba(74, 242, 161, 0.3)
@@ -300,12 +300,13 @@ function batchip() {
   # wrapper mode respects everything: `~/.config/bat/config` AND all BAT_* env vars (BAT_OPTS/BAT_STYLE/BAT_THEME ...);
   # pipe mode strips BAT_OPTS and forces BAT_STYLE=plain to avoid decorations interfering with colorization logic
   local -a _envcmd=( env -u BAT_OPTS BAT_STYLE=plain )
-  local -a _batcmd=( command bat --color=always --paging=never )
+  # NOTE: use bat's absolute path (not `command bat`): the `command` builtin cannot be exec'd by `env` in "${_envcmd[@]}" "${_batcmd[@]}" -> `env: 'command': No such file`
+  local -a _batcmd=( "$(type -P bat)" --color=always --paging=never )
 
   # intercept certain arguments that should bypass the colorization logic
   for arg in "$@"; do
     case "${arg}" in
-      --list-*|-h|--help|-V|--version|--diagnostics|--cache-dir|cache ) _checkbat; exec command bat "$@" ;;
+      --list-*|-h|--help|-V|--version|--diagnostics|--cache-dir|cache ) _checkbat; exec "$(type -P bat)" "$@" ;;
       --paging=never|-P                                               ) _dopage=false ;;
       --paging=always                                                 ) _dopage=true  ;;
       --language|--language=*|-l|--file-name|--file-name=*.*          ) _decolor=true ;;
